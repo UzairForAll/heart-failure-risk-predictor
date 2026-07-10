@@ -42,11 +42,6 @@ heart-failure-risk-predictor/
 ├── data/             heart failure dataset
 └── README.md
 ```
-
-## Author
-
-**Uzair Saleem** — [github.com/uzairforall](https://github.com/uzairforall)
-
 ---
 
 Disclaimer: educational use only, not medical advice.
