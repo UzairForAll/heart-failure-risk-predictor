@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heart Failure Risk Assessment · Uzair Saleem</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #121212;
+        --surface: #1a1a1a;
+        --border: #2e2e2e;
+        --text: #f2f2f2;
+        --muted: #a3a3a3;
+        --accent: #f2f2f2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      .label {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        line-height: 1.05;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        margin: 0 0 16px;
+      }
+
+      .intro {
+        max-width: 640px;
+        color: #d4d4d4;
+        margin-bottom: 40px;
+      }
+
+      form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        padding: 28px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        background: #101010;
+        color: var(--text);
+        font: inherit;
+      }
+
+      button {
+        grid-column: 1 / -1;
+        margin-top: 8px;
+        padding: 14px 18px;
+        border: 1px solid var(--accent);
+        background: transparent;
+        color: var(--accent);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: var(--accent);
+        color: #111;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      .result,
+      .error {
+        margin-top: 28px;
+        padding: 24px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        display: none;
+      }
+
+      .result.show,
+      .error.show {
+        display: block;
+      }
+
+      .result h2 {
+        font-family: Arial, Helvetica, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      .probability {
+        font-size: 2.4rem;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 8px 0 12px;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .error {
+        color: #ffb4b4;
+      }
+
+      .why-list {
+        margin: 18px 0 0;
+        padding-left: 18px;
+        color: #d4d4d4;
+      }
+
+      .why-list li {
+        margin-bottom: 8px;
+      }
+
+      footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="label">Uzair Saleem · Engineering Project</p>
+      <h1>Heart Failure Risk Assessment</h1>
+      <p class="intro">
+        Enter clinical parameters to estimate risk using the best-performing model from a
+        6-model comparison, with cross-validation, tuning, and explainable factors.
+      </p>
+
+      <form id="predict-form">
+        <label>
+          Age
+          <input type="number" name="age" min="0" max="120" value="60" required />
+        </label>
+        <label>
+          Sex
+          <select name="sex">
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+          </select>
+        </label>
+        <label>
+          Anaemia
+          <select name="anaemia">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </label>
+        <label>
+          Diabetes
+          <select name="diabetes">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </label>
+        <label>
+          High blood pressure
+          <select name="high_blood_pressure">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </label>
+        <label>
+          Smoking
+          <select name="smoking">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </label>
+        <label>
+          Ejection fraction (%)
+          <input type="number" name="ejection_fraction" min="0" max="100" value="38" required />
+        </label>
+        <label>
+          Creatinine phosphokinase
+          <input type="number" name="creatinine_phosphokinase" min="0" value="582" required />
+        </label>
+        <label>
+          Platelets
+          <input type="number" name="platelets" min="0" value="265000" required />
+        </label>
+        <label>
+          Serum creatinine
+          <input type="number" name="serum_creatinine" min="0" step="0.1" value="1.9" required />
+        </label>
+        <label>
+          Serum sodium
+          <input type="number" name="serum_sodium" min="0" value="130" required />
+        </label>
+        <label>
+          Follow-up period (days)
+          <input type="number" name="time" min="0" value="4" required />
+        </label>
+
+        <button type="submit" id="submit-btn">Check risk →</button>
+      </form>
+
+      <div class="result" id="result">
+        <p class="label">Assessment</p>
+        <h2 id="risk-label">High risk</h2>
+        <p class="probability" id="probability">62%</p>
+        <p id="message"></p>
+        <div id="why-block" style="display: none">
+          <p class="label" style="margin-top: 18px">Why this result?</p>
+          <ul class="why-list" id="why-list"></ul>
+        </div>
+      </div>
+
+      <div class="error" id="error"></div>
+
+      <p class="muted" id="model-info" style="margin-top: 20px"></p>
+
+      <footer>
+        Built by Uzair Saleem. Multiple models are trained and the best performer is used
+        automatically.
+        <br />
+        Disclaimer: educational use only, not medical advice.
+      </footer>
+    </div>
+
+    <script>
+      const form = document.getElementById('predict-form')
+      const result = document.getElementById('result')
+      const errorBox = document.getElementById('error')
+      const submitBtn = document.getElementById('submit-btn')
+      const modelInfo = document.getElementById('model-info')
+
+      async function loadModelInfo() {
+        try {
+          const response = await fetch('/health')
+          const data = await response.json()
+          if (response.ok && data.selected_model) {
+            const f1 = data.test_f1 ? `${Math.round(data.test_f1 * 100)}% F1` : 'tuned model'
+            modelInfo.textContent = `Active model: ${data.selected_model} · ${f1} · compared ${data.models_compared} models`
+          }
+        } catch {
+          modelInfo.textContent = ''
+        }
+      }
+
+      loadModelInfo()
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        result.classList.remove('show')
+        errorBox.classList.remove('show')
+        submitBtn.disabled = true
+        submitBtn.textContent = 'Checking...'
+
+        const formData = new FormData(form)
+        const payload = Object.fromEntries(formData.entries())
+
+        for (const key of Object.keys(payload)) {
+          if (key !== 'age' && key !== 'ejection_fraction' && key !== 'serum_creatinine' && key !== 'time') {
+            payload[key] = Number.parseInt(payload[key], 10)
+          } else {
+            payload[key] = Number.parseFloat(payload[key])
+          }
+        }
+
+        try {
+          const response = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+
+          const data = await response.json()
+          if (!response.ok) {
+            throw new Error(data.detail || 'Prediction failed')
+          }
+
+          document.getElementById('risk-label').textContent =
+            data.risk === 'high' ? 'Higher risk' : 'Lower risk'
+          document.getElementById('probability').textContent = `${data.probability_percent}%`
+          document.getElementById('message').textContent = `${data.message} Model used: ${data.model}.`
+
+          const whyBlock = document.getElementById('why-block')
+          const whyList = document.getElementById('why-list')
+          whyList.innerHTML = ''
+          if (Array.isArray(data.why) && data.why.length > 0) {
+            for (const factor of data.why) {
+              const item = document.createElement('li')
+              item.textContent = factor.summary
+              whyList.appendChild(item)
+            }
+            whyBlock.style.display = 'block'
+          } else {
+            whyBlock.style.display = 'none'
+          }
+
+          result.classList.add('show')
+        } catch (error) {
+          errorBox.textContent = error.message
+          errorBox.classList.add('show')
+        } finally {
+          submitBtn.disabled = false
+          submitBtn.textContent = 'Check risk →'
+        }
+      })
+    </script>
+  </body>
+</html>
