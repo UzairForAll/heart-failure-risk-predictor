@@ -6,6 +6,7 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from explain import explain_prediction
@@ -57,6 +58,8 @@ app.add_middleware(
 
 model, metadata = load_artifacts()
 
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
 
 @app.get("/")
 def serve_frontend():
@@ -64,6 +67,14 @@ def serve_frontend():
     if not index_path.exists():
         raise HTTPException(status_code=404, detail="Frontend not found")
     return FileResponse(index_path)
+
+
+@app.get("/disclaimer")
+def serve_disclaimer():
+    disclaimer_path = FRONTEND_DIR / "disclaimer.html"
+    if not disclaimer_path.exists():
+        raise HTTPException(status_code=404, detail="Disclaimer page not found")
+    return FileResponse(disclaimer_path)
 
 
 @app.get("/health")
