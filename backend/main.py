@@ -16,6 +16,13 @@ ROOT = Path(__file__).resolve().parent
 FRONTEND_DIR = ROOT.parent / "frontend"
 MODEL_PATH = ROOT / "model.pkl"
 META_PATH = ROOT / "model_meta.json"
+NOT_FOUND_PATH = FRONTEND_DIR / "404.html"
+
+
+def not_found_response():
+    if NOT_FOUND_PATH.exists():
+        return FileResponse(NOT_FOUND_PATH, status_code=404)
+    raise HTTPException(status_code=404, detail="Not found")
 
 
 class PredictRequest(BaseModel):
@@ -121,3 +128,8 @@ def predict(payload: PredictRequest):
         ),
         "why": factors,
     }
+
+
+@app.get("/{path:path}")
+def serve_not_found(path: str):
+    return not_found_response()
