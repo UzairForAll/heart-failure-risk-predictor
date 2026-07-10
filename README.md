@@ -1,27 +1,31 @@
-# Heart Failure Risk Predictor
+---
+title: QalbRisk
+emoji: ❤️
+colorFrom: teal
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
 
-Machine learning web app for estimating heart failure risk from clinical parameters. Built as the engineering component of Uzair Saleem's final-year work on cardiovascular disease prediction.
+# QalbRisk · Heart Failure Assessment
 
-**Live demo:** deploy from this repo, or run locally at `http://localhost:8000`
+Machine learning web app for estimating heart failure risk from clinical parameters.
+
+**Built by [Uzair Saleem](https://hellouzair.com)**
 
 ## What it does
 
-- Compares 6 models: KNN, Decision Tree, Logistic Regression, Naive Bayes, Random Forest, Neural Network
-- Selects the best performer using 5-fold cross-validation
-- Tunes Random Forest hyperparameters and decision threshold
+- Compares 6 models and uses the best performer (Random Forest)
+- 5-fold cross-validation, hyperparameter tuning, threshold tuning
 - Returns risk probability with top 3 explainable factors
-
-## Stack
-
-- Python, FastAPI, scikit-learn
-- HTML/CSS frontend served by the API
 
 ## Local setup
 
 ```bash
 cd backend
 pip install -r requirements.txt
-python train.py
 uvicorn main:app --reload --port 8000
 ```
 
@@ -32,16 +36,5 @@ Open `http://localhost:8000`
 - `GET /health` — model status and metrics
 - `GET /models` — full model comparison
 - `POST /predict` — risk assessment + explainability
-
-## Project structure
-
-```
-heart-failure-risk-predictor/
-├── backend/          API, training, saved model
-├── frontend/         prediction UI
-├── data/             heart failure dataset
-└── README.md
-```
----
 
 Disclaimer: educational use only, not medical advice.
